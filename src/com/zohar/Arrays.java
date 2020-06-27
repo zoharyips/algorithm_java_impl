@@ -311,4 +311,81 @@ public class Arrays {
         }
         return java.util.Arrays.asList(row);
     }
+
+    /**
+     * 查找被旋转的已排序无重复元素数组中的最小值
+     * 思路：由于是已排序数组，且被旋转，旋转的标志是最左值大于最右值
+     * 如果 nums[0] > nums[len - 1]，返回 nums[0] 即可
+     * 若不小于，则在 nums[1] 到 nums[len - 1] 之间使用二分法逐步缩小最小值范围
+     *
+     * @param nums 被旋转的已排序无重复数组
+     * @return 数组中最小值
+     */
+    public static int findMinInReverseSortedArray(int[] nums) {
+        if (nums.length < 2 || nums[0] < nums[nums.length - 1]) {
+            return nums[0];
+        }
+        int L = 1, R = nums.length - 1;
+        while (L < R) {
+            if (R == L + 1) {
+                return Math.min(nums[L], nums[R]);
+            }
+            if (nums[(R + L) / 2] > nums[R]) {
+                L = (R + L) / 2 + 1;
+            } else {
+                R = (R + L) / 2;
+            }
+        }
+        return nums[R];
+    }
+
+    /**
+     * 寻找两个有序数组的中位数
+     *
+     * @param nums1 数组一
+     * @param nums2 数组二
+     * @return 二者的中位数
+     */
+    public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        /* 当其中一个为空时，求另一个的中位数：O(1) */
+        if (nums1.length == 0 || nums2.length == 0) {
+            int[] availableNums = nums1.length == 0 ? nums2 : nums1;
+            return findMedianSortedArray(availableNums);
+        }
+        /* 当二者不相交时，求整体中位数：O(1) */
+        if (nums1[0] > nums2[nums2.length - 1] || nums2[0] > nums1[nums1.length - 1]) {
+            int[] LNums = nums1[0] > nums2[nums2.length - 1] ? nums2 : nums1;
+            int[] RNums = nums1[0] > nums2[nums2.length - 1] ? nums1 : nums2;
+            int len = LNums.length + RNums.length;
+            int targetIdx;
+            if ((len & 1) == 0) {
+                targetIdx = len / 2 - 1;
+                if (targetIdx >= LNums.length) {            // 左数组短
+                    return (double) (RNums[targetIdx - LNums.length] + RNums[targetIdx - LNums.length + 1]) / 2;
+                } else if (targetIdx + 1 == LNums.length){  // 长度相等
+                    return (double) (LNums[targetIdx] + RNums[0]) / 2;
+                } else {                                    // 左数组长
+                    return (double) (LNums[targetIdx] + LNums[targetIdx + 1]) / 2;
+                }
+            } else {
+                targetIdx = (1 + len) / 2 - 1;
+                return targetIdx >= LNums.length ? (double) RNums[targetIdx - LNums.length] : (double) LNums[targetIdx];
+            }
+        }
+        /* 当二者相包含时 */
+
+        return 0.0;
+    }
+
+    /**
+     * 求有序数组的中位数
+     *
+     * @param nums 有序数组
+     * @return 中位数
+     */
+    public static double findMedianSortedArray(int[] nums) {
+        return (nums.length & 1) == 0
+                ? (double)(nums[nums.length / 2 - 1] + nums[nums.length / 2]) / 2
+                : (double)nums[(1 + nums.length) / 2 - 1];
+    }
 }
