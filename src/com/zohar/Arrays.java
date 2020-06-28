@@ -1,9 +1,6 @@
 package com.zohar;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Arrays {
 
@@ -387,5 +384,35 @@ public class Arrays {
         return (nums.length & 1) == 0
                 ? (double)(nums[nums.length / 2 - 1] + nums[nums.length / 2]) / 2
                 : (double)nums[(1 + nums.length) / 2 - 1];
+    }
+
+    /**
+     * 直方图拿来装水，求哪两条边装的水最多，返回最多的那个容量
+     * 击败：75%
+     *
+     * @param height 各高度
+     * @return 最大盛水量
+     */
+    public static int maxWaterArea(int[] height) {
+        int LIdx = 0, RIdx = height.length - 1, res = 0;
+        while (LIdx < RIdx) {
+            res = Math.max(res, Math.min(height[RIdx], height[LIdx]) * (RIdx - LIdx));
+            if (height[RIdx] > height[LIdx]) {
+                LIdx++;
+            } else {
+                RIdx--;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 将整形数字转化为罗马数字
+     *
+     * @param num 数字
+     * @return 罗马数字
+     */
+    public static String intToRoman(int num) {
+
     }
 }
