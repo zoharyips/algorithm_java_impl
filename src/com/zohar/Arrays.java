@@ -406,13 +406,150 @@ public class Arrays {
         return res;
     }
 
-    /**
-     * 将整形数字转化为罗马数字
-     *
-     * @param num 数字
-     * @return 罗马数字
-     */
-    public static String intToRoman(int num) {
+    public static boolean isMatch(String s, String p) {
+        if (s.length() == 0) {
+            return p.length() == 0 || (p.length() > 1 && p.charAt(1) == '*');
+        }
+        if (p.length() == 0) {
+            return false;
+        }
+        final int STATUS_CHAR = 1, STATUS_RAND = 2, STATUS_CHAR_STAR = 3, STATUS_RAND_STAR = 4;
+        int currentStatus = 0, lastRandStatusCursor = -1, currentStatusCursor = -1, stringCursor = 0, patternCursor = 0;
+        char currentRequiredChar = p.charAt(0), tmpCharS, tmpCharP;
+        while (stringCursor < s.length() && patternCursor < p.length()) {
+            /* 获取当前字符 */
+            tmpCharS = s.charAt(stringCursor);
+            if (tmpCharS < 'a' || tmpCharS > 'z') {
+                return false;
+            }
+            /* 状态更新 */
+            if (patternCursor != currentStatusCursor) {
+                /* 如果当前状态是随机字符状态，则保存上次随机字符状态下标为当前状态下标 */
+                if (currentStatus == STATUS_RAND_STAR) {
+                    lastRandStatusCursor = currentStatusCursor;
+                }
+                /* 读取第一个字符 */
+                tmpCharP = p.charAt(patternCursor++);
+                if (tmpCharP >= 'a' && tmpCharP <= 'z') {
+                    currentStatus = STATUS_CHAR;
+                    currentRequiredChar = tmpCharP;
+                } else if (tmpCharP == '.') {
+                    currentStatus = STATUS_RAND;
+                } else {
+                    return false;
+                }
+                /* 读取第二个字符 */
+                if (patternCursor == p.length()) {
+                    if (stringCursor == s.length() - 1 && (currentStatus == STATUS_RAND || tmpCharS == currentRequiredChar)) {
+                        return true;
+                    } else {
+                        if (lastRandStatusCursor > -1) {
+                            currentStatus = STATUS_RAND_STAR;
+                            currentStatusCursor = lastRandStatusCursor;
+                            patternCursor = currentStatusCursor;
+                            currentRequiredChar = p.charAt(patternCursor + 1);
+                            continue;
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+                tmpCharP = p.charAt(patternCursor);
+                if (tmpCharP == '*') {
+                    currentStatus = currentStatus == STATUS_CHAR ? STATUS_CHAR_STAR : STATUS_RAND_STAR;
+                } else if (tmpCharP != '.' && !(tmpCharP >= 'a' && tmpCharP <= 'z')) {
+                    return false;
+                }
+                /* 如果更新后状态并不是连续匹配状态，将当前状态下标加一 */
+                if (currentStatus == STATUS_CHAR || currentStatus == STATUS_RAND) {
+                    patternCursor--;
+                    currentStatusCursor = patternCursor;
+                } else {
+                    /* 如果是连续匹配状态，则将 currentRequiredChar 设置为终止连续匹配的字符 */
+                    currentStatusCursor += 2;
+                    /* 可以直接匹配到最后 */
+                    if (patternCursor + 1 == p.length()) {
+                        if (currentStatus != STATUS_RAND_STAR) {
+                            for (int i = stringCursor; i < s.length(); i++) {
+                                if (currentRequiredChar != s.charAt(i)) {
+                                    return false;
+                                }
+                            }
+                        }
+                        return true;
+                    }
+                    currentRequiredChar = currentStatus == STATUS_RAND_STAR ? p.charAt(currentStatusCursor + 1) : currentRequiredChar;
+                }
+            }
 
+            switch (currentStatus) {
+                case STATUS_CHAR:
+                    if (tmpCharS == currentRequiredChar) {
+                        stringCursor++;
+                        patternCursor++;
+                    } else {
+                        if (lastRandStatusCursor == -1) {
+                            return false;
+                        } else {
+                            currentStatus = STATUS_RAND_STAR;
+                            currentStatusCursor = lastRandStatusCursor;
+                            patternCursor = currentStatusCursor;
+                            currentRequiredChar = p.charAt(currentStatusCursor + 1);
+                        }
+                    }
+                    break;
+                case STATUS_CHAR_STAR:
+                    if (tmpCharS != currentRequiredChar) {
+                        patternCursor++;
+                    } else {
+                        stringCursor++;
+                    }
+                    break;
+                case STATUS_RAND:
+                    patternCursor++;
+                    stringCursor++;
+                    break;
+                case STATUS_RAND_STAR:
+                    if (currentRequiredChar == tmpCharS) {
+                        patternCursor += 2;
+                    }
+                    stringCursor++;
+                    break;
+            }
+        }
+        if (stringCursor == s.length() && patternCursor == p.length()) {
+            return true;
+        } else {
+            if (currentStatus == STATUS_CHAR_STAR) {
+                /* 把所有可以去掉的字符去掉 */
+                /* 倒着匹配 */
+                int counter = 1;
+                for (int i = p.length() - 1; i > patternCursor; i--) {
+                    if (p.charAt(i) == '*') {
+                        i--;
+                        continue;
+                    }
+                    if (p.charAt(i) != currentRequiredChar || s.charAt(s.length() - counter--) != p.charAt(i)) {
+                        return false;
+                    }
+                }
+                return true;
+            } else if (currentStatus == STATUS_RAND_STAR) {
+                return patternCursor == p.length() - 1;
+            } else {
+                for (int i = p.length() - 1; i >= patternCursor; i--) {
+                    if (p.charAt(i) == '*') {
+                        i--;
+                        continue;
+                    }
+                    return false;
+                }
+                return true;
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(isMatch("abc", "a*b*c*.*abca*b*c*.*"));
     }
 }
