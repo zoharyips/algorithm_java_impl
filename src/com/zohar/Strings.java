@@ -1,7 +1,7 @@
 package com.zohar;
 
+import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Stack;
 
 public class Strings {
 
@@ -76,6 +76,65 @@ public class Strings {
             }
         }
         return String.valueOf(chars);
+    }
+
+    /**
+     * 将整型转化为罗马数字
+     * 击败：85%
+     *
+     * @param num 正整数
+     * @return 罗马数字字符串
+     */
+    public static String intToRoman(int num) {
+        StringBuilder res = new StringBuilder();
+        int quotient, divisor = 1000;
+        String character;
+        while (num > 0) {
+            if (num >= 1000) {
+                divisor = 1000;
+                character = "M";
+            } else if (num >= 900) {
+                divisor = 900;
+                character = "CM";
+            } else if (num >= 500) {
+                divisor = 500;
+                character = "D";
+            } else if (num >= 400) {
+                divisor = 400;
+                character = "CD";
+            } else if (num >= 100) {
+                divisor = 100;
+                character = "C";
+            } else if (num >= 90) {
+                divisor = 90;
+                character = "XC";
+            } else if (num >= 50) {
+                divisor = 50;
+                character = "L";
+            } else if (num >= 40) {
+                divisor = 40;
+                character = "XL";
+            } else if (num >= 10) {
+                divisor = 10;
+                character = "X";
+            } else if (num >= 9) {
+                divisor = 9;
+                character = "IX";
+            } else if (num >= 5) {
+                divisor = 5;
+                character = "V";
+            } else if (num >= 4) {
+                divisor = 4;
+                character = "IV";
+            } else {
+                divisor = 1;
+                character = "I";
+            }
+            quotient = num / divisor;
+            num = num % divisor;
+            res.append(character.repeat(quotient));
+        }
+        return res.toString();
     }
 
     public static void main(String[] args) {
