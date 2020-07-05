@@ -1,6 +1,11 @@
 package com.zohar.arithmetic;
 
 public class Permutations {
+    /**
+     * 使数组的排列顺序大一，如果排列元素的顺序是最大的了，那就翻转过来，在原数组进行操作
+     *
+     * @param nums 待操作排列数组
+     */
     public static void nextPermutation(int[] nums) {
         if (nums.length < 2) return;
         boolean isSwapped = false;

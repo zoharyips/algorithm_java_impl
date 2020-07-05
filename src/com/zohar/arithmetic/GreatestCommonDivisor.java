@@ -33,6 +33,14 @@ public class GreatestCommonDivisor {
         return decreasesTechnique(max - min, min);
     }
 
+    /**
+     * 相同质公因数解法
+     * 介绍：获取两个数所有相同的质公因数，这些因数的乘积就是最大公约数
+     *
+     * @param a 数字
+     * @param b 数字
+     * @return 最大公约数
+     */
     public static int samePrimerFactor(int a, int b) {
         if (a == 0 || b == 0) return 0;
         int max = Math.max(Math.abs(a), Math.abs(b)), min = Math.min(Math.abs(a), Math.abs(b));

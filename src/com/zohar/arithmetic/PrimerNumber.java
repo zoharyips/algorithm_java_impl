@@ -6,18 +6,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class PrimerNumber {
-    public static void main(String[] args) {
-//        for (int i = 0; i < 200; i++) {
-//            if (isPrimerForce(i) != sieveOfEratosthenes(i)) {
-//                System.out.println(i + "\t" + isPrimerForce(i) + " : " + sieveOfEratosthenes(i));
-//            }
-//        }
-        System.out.println(Arrays.toString(primerFactor(3081)));
-//        for (int i = 0; i < 200; i++) {
-//            System.out.println(i + "\t:" + Arrays.toString(primerFactor(i)));
-//        }
-    }
 
+    /**
+     * 暴力判断质数
+     *
+     * @param num 数字
+     * @return 若为质数返回 true
+     */
     public static boolean isPrimerForce(int num) {
         if (num < 2) return false;
         for (int i = 2; i < num; i++) {
@@ -93,8 +88,13 @@ public class PrimerNumber {
         return res;
     }
 
-
-    public int countPrimes(int n) {
+    /**
+     * 计算小于 n 的质数的个数，不包含 n
+     *
+     * @param n 数字
+     * @return 小于 n 的质数的个数
+     */
+    public static int countPrimes(int n) {
         if (n <= 2) return 0;
         boolean[] isNotPrimer = new boolean[n];
         for (int i = 3; i < isNotPrimer.length; i += 2) {

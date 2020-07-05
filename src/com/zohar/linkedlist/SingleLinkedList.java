@@ -1,6 +1,8 @@
-package com.zohar;
+package com.zohar.linkedlist;
 
-public class MyLinkedList {
+import com.zohar.linkedlist.ListNode;
+
+public class SingleLinkedList {
 
     public static void main(String[] args) {
         ListNode one = new ListNode(1);
@@ -42,12 +44,4 @@ public class MyLinkedList {
         return head;
     }
 
-
-    private static class ListNode {
-        int val;
-        ListNode next;
-        ListNode(int x) {
-            val = x;
-        }
-    }
 }
